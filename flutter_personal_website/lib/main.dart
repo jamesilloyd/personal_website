@@ -174,7 +174,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         title: 'Rugby',
                         imageFirst: false),
                     SizedBox(
-                      height: 30,
+                      height: 50,
                     ),
                     JLSection(
                       heading: heading,

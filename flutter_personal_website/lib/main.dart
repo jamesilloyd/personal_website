@@ -17,7 +17,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'James Lloyd',
-      theme: ThemeData(primarySwatch: Colors.blue, fontFamily: 'Futura'),
+      theme: ThemeData(
+          primarySwatch: Colors.blue,
+          fontFamily: 'Futura',
+          textSelectionTheme: TextSelectionThemeData(
+              selectionColor: Colors.red[300]?.withOpacity(0.5))),
       home: const MyHomePage(title: 'James Lloyd'),
     );
   }
@@ -35,252 +39,315 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   //TODO: needs to be dependent on screen size
   TextStyle heading = TextStyle(fontSize: 30, color: Colors.white);
-  TextStyle para = TextStyle(fontSize: 20, color: Colors.white);
+  TextStyle para = TextStyle(fontSize: 18, color: Colors.white);
+
+  List experienceImages = [
+    'images/fella.png',
+    'images/fetch.png',
+    'images/festo.png',
+    'images/rb.png',
+    'images/switchee.png',
+    'images/cambridge.jpeg'
+  ];
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
+    bool isSmallScreen = MediaQuery.of(context).size.width < 800;
+    // bool isSmallScreen = true;
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).requestFocus(new FocusNode());
+      },
+      child: Scaffold(
         backgroundColor: Colors.black,
-        toolbarHeight: 75,
-        title: SelectableText(
-          widget.title,
-          style: TextStyle(fontSize: 30),
-        ),
-      ),
-      body: ListView(
-        padding: EdgeInsets.symmetric(horizontal: 60),
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 60.0),
-            child: Container(
-              height: MediaQuery.of(context).size.height * 0.7,
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('images/zen.jpg'),
-                    fit: BoxFit.fitWidth,
-                  ),
-                  borderRadius: BorderRadius.circular(20)),
-            ),
+        appBar: AppBar(
+          backgroundColor: Colors.black,
+          toolbarHeight: 75,
+          title: Text(
+            widget.title,
+            style: TextStyle(fontSize: 30),
           ),
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Column(
-                  children: [
-                    SelectableText(
-                      'About',
-                      style: heading,
+        ),
+        body: ListView(
+          padding: EdgeInsets.symmetric(horizontal: 60),
+          children: [
+            Padding(
+              padding:  EdgeInsets.symmetric(vertical: isSmallScreen ? 5:60.0),
+              child: Container(
+                height: MediaQuery.of(context).size.height * 0.7,
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('images/zen.jpg'),
+                      fit: BoxFit.fitWidth,
                     ),
-                    JLDivider(),
-                    SizedBox(
-                      height: 30,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        //TODO: image quality
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: Image.asset(
-                            'images/me.jpg',
-                            width: MediaQuery.of(context).size.width * 0.4,
+                    borderRadius: BorderRadius.circular(20)),
+              ),
+            ),
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Column(
+                    children: [
+                      SelectableText(
+                        'About',
+                        style: heading,
+                      ),
+                      JLDivider(),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      isSmallScreen
+                          ? Column(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(20),
+                                  child: Image.asset(
+                                    'images/me.jpg',
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.4,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                SelectableText(
+                                    'Hello, this is a little description about myself before we get into the heavy stuff. Just trying to keep it nice and light!',
+                                    style: para),
+                              ],
+                            )
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                //TODO: image quality
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(20),
+                                  child: Image.asset(
+                                    'images/me.jpg',
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.4,
+                                  ),
+                                ),
+                                Flexible(
+                                  child: Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 20),
+                                    child: SelectableText(
+                                        'Hello, this is a little description about myself before we get into the heavy stuff. Just trying to keep it nice and light!',
+                                        style: para),
+                                  ),
+                                ),
+                              ],
+                            ),
+                      SizedBox(height: isSmallScreen ? 50:100),
+                      SelectableText('Experience', style: heading),
+                      JLDivider(),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          JLButton(
+                            name: 'CV',
+                            onPressed: () async {
+                              // final pdf = pw.Document();
+                              // pdf.addPage(pw.Page(pageFormat: PdfPageFormat.a4,build: (pw.Context context) {
+                              //   return pw.Center(child: pw.SelectableText('Hello World'),);
+                              // }));
+
+                              print('hello');
+                              // final bytes = await pdf.save();
+
+                              final bytes = await rootBundle.load(
+                                  "files/CV.pdf"); // location of your asset file
+
+                              final blob =
+                                  html.Blob([bytes], 'application/pdf');
+                              final url =
+                                  html.Url.createObjectUrlFromBlob(blob);
+                              html.window.open(url, '_blank');
+                              html.Url.revokeObjectUrl(url);
+
+                              // OpenFile.open("files/CV.pdf");
+                            },
                           ),
+                        ],
+                      ),
+                      Center(
+                        child: GridView.count(
+                          shrinkWrap: true,
+                          crossAxisCount: 3,
+                          children: List.generate(6, (index) {
+                            return Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(20),
+                                  child: Container(
+                                    child: Image.asset(experienceImages[index]),
+                                    color: Colors.white,
+                                  )),
+                            );
+                          }),
                         ),
-                        Flexible(
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 20),
-                            child: SelectableText(
-                                'Hello, this is a little description about myself before we get into the heavy stuff. Just trying to keep it nice and light!',
-                                style: para),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 100),
-                    SelectableText('Experience', style: heading),
-                    JLDivider(),
-                    SizedBox(
-                      height: 30,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        JLButton(
-                          name: 'CV',
-                          onPressed: () async {
-                            // final pdf = pw.Document();
-                            // pdf.addPage(pw.Page(pageFormat: PdfPageFormat.a4,build: (pw.Context context) {
-                            //   return pw.Center(child: pw.SelectableText('Hello World'),);
-                            // }));
-
-                            print('hello');
-                            // final bytes = await pdf.save();
-
-                            final bytes = await rootBundle.load(
-                                "files/CV.pdf"); // location of your asset file
-
-                            final blob = html.Blob([bytes], 'application/pdf');
-                            final url = html.Url.createObjectUrlFromBlob(blob);
-                            html.window.open(url, '_blank');
-                            html.Url.revokeObjectUrl(url);
-
-                            // OpenFile.open("files/CV.pdf");
-                          },
-                        ),
-                        JLButton(name: 'Experience/Journey', onPressed: () {})
-                      ],
-                    ),
-                    SizedBox(
-                      height: 200,
-                    ),
-                    SelectableText('Projects', style: heading),
-                    JLDivider(),
-                    SizedBox(
-                      height: 30,
-                    ),
-                    JLSection(
+                      ),
+                      SizedBox(
+                        height: isSmallScreen ? 50:200,
+                      ),
+                      SelectableText('Projects', style: heading),
+                      JLDivider(),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      JLSection(
                         heading: heading,
                         para: para,
                         title: 'Genchi',
-                        paragraphText: 'We made an app!',
+                        paragraphText:
+                            'A platform for students to find opportunities. Aiming to empower people to create their own impact through equal access to opportunities, Genchi enables people to develop their skillset and contribute towards causes that are meaningful to them.',
                         image: 'images/genchi.png',
-                        imageFirst: false),
-                    SizedBox(height: 30),
-                    JLSection(
+                        imageFirst: false,
+                        isSmallScreenSize: isSmallScreen,
+                      ),
+                      SizedBox(height: 50),
+                      JLSection(
                         heading: heading,
                         para: para,
-                        title: 'Major Design Project',
-                        paragraphText: 'THE MUD HUTTERS wohooo',
+                        title: 'Major Design Project\nThe Refuge Printer',
+                        paragraphText:
+                            'There are 4.6 million people currently living in managed refugee camps who are dependent on shelter for survival. 74% of existing accomodation is unsatisfactory. The Refuge Printer is a 3D printer that can build comfortable, durable, and secure accommodation to drasticall improve standards of living. Unlike existing solutions, such as Better Shelter, that import flat-pack shetlers, the Refuge Printer builds shelters out of locally sourced materials, thus reducing transport costs, material costs and environmental impact, whilst stimulating local economies.',
                         image: 'images/mdp.JPG',
-                        imageFirst: true),
-                    SizedBox(
-                      height: 200,
-                    ),
-                    SelectableText('Interests', style: heading),
-                    JLDivider(),
-                    SizedBox(
-                      height: 30,
-                    ),
-                    JLSection(
+                        imageFirst: true,
+                        isSmallScreenSize: isSmallScreen,
+                      ),
+                      SizedBox(height: isSmallScreen ? 50:200),
+                      SelectableText('Interests', style: heading),
+                      JLDivider(),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      JLSection(
                         heading: heading,
                         para: para,
                         image: 'images/rugby.jpg',
                         paragraphText: 'A bit about my rugby "career".',
                         title: 'Rugby',
-                        imageFirst: false),
-                    SizedBox(
-                      height: 50,
-                    ),
-                    JLSection(
-                      heading: heading,
-                      para: para,
-                      title: 'Travelling',
-                      paragraphText: 'A bit about my travels.',
-                      image: 'images/travels.jpg',
-                      imageFirst: true,
-                    ),
-                    SizedBox(
-                      height: 30,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        JLButton(
-                          name: 'Reading',
-                          onPressed: () async {
-                            const url =
-                                "https://jameslloyd.notion.site/Read-Books-84f527d45fe7496b889f9a742cee26a6";
-                            if (await canLaunch(url)) {
-                              await launch(url);
-                            } else {
-                              throw 'Could not launch $url';
-                            }
-                          },
-                        ),
-                        JLButton(
-                          name: "My Photos",
-                          onPressed: () async {
-                            const url = "https://www.instagram.com/fujijlloyd/";
-                            if (await canLaunch(url)) {
-                              await launch(url);
-                            } else {
-                              throw 'Could not launch $url';
-                            }
-                          },
-                        ),
-                        JLButton(
-                          name: 'Travels in Guatemala',
-                          onPressed: () async {
-                            const url =
-                                "https://jameslloyd.notion.site/Guatemala-69c45eeb29af45b4a929d876d346291d";
-                            if (await canLaunch(url)) {
-                              await launch(url);
-                            } else {
-                              throw 'Could not launch $url';
-                            }
-                          },
-                        ),
-                        JLButton(
-                          name: 'Playlists',
-                          onPressed: () async {
-                            const url =
-                                "https://open.spotify.com/user/8jgj19mnukoyzb805mfibdhvk?si=B5ymIuSnRkuofMO-H_MGHA";
-                            if (await canLaunch(url)) {
-                              await launch(url);
-                            } else {
-                              throw 'Could not launch $url';
-                            }
-                          },
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 200,
-                ),
-                SelectableText(
-                  'Social Links ...',
-                  style: TextStyle(fontSize: 30, color: Colors.white),
-                ),
-                Container(
-                  height: 100,
-                  child: Center(
-                    child: Row(
-                      children: [
-                        Expanded(flex: 1, child: SizedBox.shrink()),
-                        Expanded(
-                          flex: 1,
-                          child: SelectableText(
-                            'Made by James Lloyd',
-                            style: TextStyle(color: Colors.white, fontSize: 20),
-                            textAlign: TextAlign.center,
+                        imageFirst: false,
+                        isSmallScreenSize: isSmallScreen,
+                      ),
+                      SizedBox(
+                        height: 50,
+                      ),
+                      JLSection(
+                        heading: heading,
+                        para: para,
+                        title: 'Travelling',
+                        paragraphText: 'A bit about my travels.',
+                        image: 'images/travels.jpg',
+                        imageFirst: true,
+                        isSmallScreenSize: isSmallScreen,
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          JLButton(
+                            name: 'Reading',
+                            onPressed: () async {
+                              const url =
+                                  "https://jameslloyd.notion.site/Read-Books-84f527d45fe7496b889f9a742cee26a6";
+                              if (await canLaunch(url)) {
+                                await launch(url);
+                              } else {
+                                throw 'Could not launch $url';
+                              }
+                            },
                           ),
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Image(
-                              image:
-                                  AssetImage('images/Google-flutter-logo.png'),
-                              height: 40,
+                          JLButton(
+                            name: "My Photos",
+                            onPressed: () async {
+                              const url =
+                                  "https://www.instagram.com/fujijlloyd/";
+                              if (await canLaunch(url)) {
+                                await launch(url);
+                              } else {
+                                throw 'Could not launch $url';
+                              }
+                            },
+                          ),
+                          //TODO: add this in later
+                          // JLButton(
+                          //   name: 'Travels in Guatemala',
+                          //   onPressed: () async {
+                          //     const url =
+                          //         "https://jameslloyd.notion.site/Guatemala-69c45eeb29af45b4a929d876d346291d";
+                          //     if (await canLaunch(url)) {
+                          //       await launch(url);
+                          //     } else {
+                          //       throw 'Could not launch $url';
+                          //     }
+                          //   },
+                          // ),
+                          JLButton(
+                            name: 'Playlists',
+                            onPressed: () async {
+                              const url =
+                                  "https://open.spotify.com/user/8jgj19mnukoyzb805mfibdhvk?si=B5ymIuSnRkuofMO-H_MGHA";
+                              if (await canLaunch(url)) {
+                                await launch(url);
+                              } else {
+                                throw 'Could not launch $url';
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: isSmallScreen ? 50:100),
+                  SelectableText(
+                    'Social Links ...',
+                    style: TextStyle(fontSize: 30, color: Colors.white),
+                  ),
+                  Container(
+                    height: 100,
+                    child: Center(
+                      child: Row(
+                        children: [
+                          Expanded(flex: 1, child: SizedBox.shrink()),
+                          Expanded(
+                            flex: 1,
+                            child: SelectableText(
+                              'Made by James Lloyd',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 20),
+                              textAlign: TextAlign.center,
                             ),
                           ),
-                        ),
-                      ],
+                          Expanded(
+                            flex: 1,
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Image(
+                                image: AssetImage(
+                                    'images/Google-flutter-logo.png'),
+                                height: 40,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -294,6 +361,7 @@ class JLSection extends StatelessWidget {
       required this.title,
       required this.paragraphText,
       required this.image,
+      required this.isSmallScreenSize,
       required this.imageFirst})
       : super(key: key);
 
@@ -303,72 +371,98 @@ class JLSection extends StatelessWidget {
   final String paragraphText;
   final String image;
   final bool imageFirst;
+  final bool isSmallScreenSize;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: imageFirst
-          ? [
-              Flexible(
-                flex: 1,
-                child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: Image.asset(image,
-                        width: MediaQuery.of(context).size.width * 0.4)),
+    return isSmallScreenSize
+        ? Column(
+            children: [
+              SelectableText(
+                title,
+                style: heading,
+                textAlign: TextAlign.center,
               ),
-              Expanded(
-                flex: 1,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SelectableText(
-                      title,
-                      style: heading,
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    SelectableText(
-                      paragraphText,
-                      style: para,
-                    ),
-                  ],
-                ),
+              SizedBox(
+                height: 20,
               ),
-            ]
-          : [
-              Expanded(
-                flex: 1,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SelectableText(
-                      title,
-                      style: heading,
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    SelectableText(
-                      paragraphText,
-                      style: para,
-                    ),
-                  ],
-                ),
+              ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image.asset(image,
+                      width: MediaQuery.of(context).size.width * 0.7)),
+              SizedBox(
+                height: 20,
               ),
-              Flexible(
-                flex: 1,
-                child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: Image.asset(image,
-                        width: MediaQuery.of(context).size.width * 0.4)),
-              )
+              SelectableText(
+                paragraphText,
+                style: para,
+                textAlign: TextAlign.justify,
+              ),
             ],
-    );
+          )
+        : Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: imageFirst
+                ? [
+                    Flexible(
+                      flex: 1,
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: Image.asset(image,
+                              width: MediaQuery.of(context).size.width * 0.4)),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SelectableText(
+                            title,
+                            style: heading,
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          SelectableText(
+                            paragraphText,
+                            style: para,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ]
+                : [
+                    Expanded(
+                      flex: 1,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SelectableText(
+                            title,
+                            style: heading,
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          SelectableText(
+                            paragraphText,
+                            style: para,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Flexible(
+                      flex: 1,
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: Image.asset(image,
+                              width: MediaQuery.of(context).size.width * 0.4)),
+                    )
+                  ],
+          );
   }
 }
 
@@ -405,7 +499,7 @@ class JLButton extends StatelessWidget {
       child: Container(
         // color: Colors.red,
         padding: EdgeInsets.all(10),
-        child: SelectableText(
+        child: Text(
           name,
           style: TextStyle(color: Colors.white, fontSize: 20),
         ),

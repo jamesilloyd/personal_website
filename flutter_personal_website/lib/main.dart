@@ -1,10 +1,21 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pdf/pdf.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:open_file/open_file.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:universal_html/html.dart' as html;
+
+import 'components/JLButton.dart';
+import 'components/JLDivider.dart';
+import 'components/JLSection.dart';
+import 'package:mailto/mailto.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+
+import 'components/alignedGrid.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,10 +29,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'James Lloyd',
       theme: ThemeData(
-          primarySwatch: Colors.blue,
-          fontFamily: 'Futura',
-          textSelectionTheme: TextSelectionThemeData(
-              selectionColor: Colors.red[300]?.withOpacity(0.5))),
+        primarySwatch: Colors.red,
+        fontFamily: 'Futura',
+        // textSelectionTheme: TextSelectionThemeData(
+        // selectionColor: Colors.red[300]?.withOpacity(0.5)),
+      ),
       home: const MyHomePage(title: 'James Lloyd'),
     );
   }
@@ -41,19 +53,36 @@ class _MyHomePageState extends State<MyHomePage> {
   TextStyle heading = TextStyle(fontSize: 30, color: Colors.white);
   TextStyle para = TextStyle(fontSize: 18, color: Colors.white);
 
-  List experienceImages = [
-    'images/fella.png',
-    'images/fetch.png',
-    'images/festo.png',
-    'images/rb.png',
-    'images/switchee.png',
-    'images/cambridge.jpeg'
+  List<Map> experienceImages = [
+    {'file': 'images/fella.png', 'url': 'https://www.joinfella.com/'},
+    {'file': 'images/fetch.png', 'url': 'https://fetch.ai/'},
+    {'file': 'images/festo.png', 'url': 'https://festo.com/'},
+    {'file': 'images/rb.png', 'url': 'https://www.rolandberger.com/en/'},
+    {'file': 'images/switchee.png', 'url': 'https://www.switchee.co/'},
+    {'file': 'images/cambridge.png', 'url': 'https://www.cam.ac.uk/'},
+    {
+      'file': 'images/rae.png',
+      'url':
+          'https://www.raeng.org.uk/grants-prizes/grants/schemes-for-students/engineering-leaders-scholarship'
+    },
+    {'file': 'images/ff.png', 'url': ''},
+    {
+      'file': 'images/iet.png',
+      'url':
+          'https://www.theiet.org/impact-society/awards-scholarships/scholarships-and-bursaries/iet-diamond-scholarships/'
+    },
+    {
+      'file': 'images/edt.png',
+      'url': 'https://www.etrust.org.uk/the-year-in-industry'
+    }
   ];
 
   @override
   Widget build(BuildContext context) {
-    bool isSmallScreen = MediaQuery.of(context).size.width < 800;
-    // bool isSmallScreen = true;
+    bool isSmallScreen = MediaQuery.of(context).size.width < 850;
+    bool needs2Columns = MediaQuery.of(context).size.width < 670;
+    bool needs4Columns = MediaQuery.of(context).size.width > 1000;
+    print(MediaQuery.of(context).size.width);
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).requestFocus(new FocusNode());
@@ -71,17 +100,23 @@ class _MyHomePageState extends State<MyHomePage> {
         body: ListView(
           padding: EdgeInsets.symmetric(horizontal: 60),
           children: [
-            Padding(
-              padding:  EdgeInsets.symmetric(vertical: isSmallScreen ? 5:60.0),
-              child: Container(
-                height: MediaQuery.of(context).size.height * 0.7,
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage('images/zen.jpg'),
-                      fit: BoxFit.fitWidth,
-                    ),
-                    borderRadius: BorderRadius.circular(20)),
+            SizedBox(
+              // color: Colors.red,
+              height: MediaQuery.of(context).size.height * 0.9,
+              width: MediaQuery.of(context).size.width * 0.9,
+              child: Center(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image.asset(
+                    'images/zen.jpg',
+                    height: MediaQuery.of(context).size.height * 0.8,
+                    fit: BoxFit.fitHeight,
+                  ),
+                ),
               ),
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.05,
             ),
             Center(
               child: Column(
@@ -113,35 +148,41 @@ class _MyHomePageState extends State<MyHomePage> {
                                   height: 20,
                                 ),
                                 SelectableText(
-                                    'Hello, this is a little description about myself before we get into the heavy stuff. Just trying to keep it nice and light!',
+                                    "Hello, I'm James.\n\nI'm an MEng graduate in Manufacturing Engineering and Management looking to gain experience applying blockchain technologies to problems in sustainability and climate.",
+                                    textAlign: isSmallScreen ? TextAlign.center:TextAlign.left,
                                     style: para),
                               ],
                             )
                           : Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                //TODO: image quality
+                                SizedBox(
+                                  // width: MediaQuery.of(context).size.width*0.1,
+                                  width: 20,
+                                  ),
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(20),
                                   child: Image.asset(
                                     'images/me.jpg',
                                     width:
-                                        MediaQuery.of(context).size.width * 0.4,
+                                        MediaQuery.of(context).size.width * 0.3,
                                   ),
                                 ),
-                                Flexible(
+                                SizedBox(
+                                  // color: Colors.blue,
+                                  width: MediaQuery.of(context).size.width*0.5,
                                   child: Padding(
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 20),
                                     child: SelectableText(
-                                        'Hello, this is a little description about myself before we get into the heavy stuff. Just trying to keep it nice and light!',
-                                        style: para),
+                                        "Hello, I'm James.\n\nI'm an MEng graduate in Manufacturing Engineering and Management looking to gain experience applying blockchain technologies to problems in sustainability and climate.",
+                                        style: heading,),
                                   ),
                                 ),
                               ],
                             ),
-                      SizedBox(height: isSmallScreen ? 50:100),
+                      SizedBox(height: isSmallScreen ? 50 : 100),
                       SelectableText('Experience', style: heading),
                       JLDivider(),
                       SizedBox(
@@ -153,12 +194,12 @@ class _MyHomePageState extends State<MyHomePage> {
                           JLButton(
                             name: 'CV',
                             onPressed: () async {
+                              //TODO: look at this as I cannot download it
                               // final pdf = pw.Document();
                               // pdf.addPage(pw.Page(pageFormat: PdfPageFormat.a4,build: (pw.Context context) {
                               //   return pw.Center(child: pw.SelectableText('Hello World'),);
                               // }));
 
-                              print('hello');
                               // final bytes = await pdf.save();
 
                               final bytes = await rootBundle.load(
@@ -177,24 +218,55 @@ class _MyHomePageState extends State<MyHomePage> {
                         ],
                       ),
                       Center(
-                        child: GridView.count(
-                          shrinkWrap: true,
-                          crossAxisCount: 3,
-                          children: List.generate(6, (index) {
-                            return Padding(
-                              padding: const EdgeInsets.all(20.0),
-                              child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(20),
-                                  child: Container(
-                                    child: Image.asset(experienceImages[index]),
-                                    color: Colors.white,
-                                  )),
-                            );
-                          }),
-                        ),
+                        child: AlignedGrid(gridList: experienceImages,columns: needs2Columns ? 2 : needs4Columns ? 4 : 3,),
+
+                        // child: GridView.count(
+                        //   shrinkWrap: true,
+                          
+                        //   crossAxisCount: isSmallScreen ? 2 : isLargeScreen ? 4 : 3,
+                        //   children:
+                        //       List.generate(experienceImages.length, (index) {
+
+                        //     //If we have 3 widgets we want to centre the last if % = 1
+                        //     //If we have 4 widgets we want to cetnre the last if % = 2
+                        //     return Padding(
+                        //         padding: const EdgeInsets.all(20.0),
+                        //         child: ElevatedButton(
+                        //             style: ElevatedButton.styleFrom(
+                        //               primary: Colors.white,
+                        //               padding: EdgeInsets.all(0),
+                        //               shape: RoundedRectangleBorder(
+                        //                   borderRadius:
+                        //                       BorderRadius.circular(20)),
+                        //             ),
+                        //             onPressed: () async {
+                        //               var url = experienceImages[index]['url'];
+                        //               if (await canLaunch(url)) {
+                        //                 await launch(url);
+                        //               } else {
+                        //                 throw 'Could not launch $url';
+                        //               }
+                        //             },
+                        //             child: Container(
+                        //               decoration: BoxDecoration(
+                        //                 borderRadius: BorderRadius.circular(20),
+                        //                 image: DecorationImage(fit:BoxFit.fitWidth,
+                        //                 image: Image.asset(experienceImages[index]['file']).image)
+                        //               ),
+                        //             )
+                        //             // child: ClipRRect(
+                        //             //     borderRadius: BorderRadius.circular(20),
+                        //             //     child: FittedBox(
+                        //             //       fit: BoxFit.contain,
+                        //             //       child: Image.asset(
+                        //             //           experienceImages[index]['file'],),
+                        //             //     )),
+                        //             ));
+                        //   }),
+                        // ),
                       ),
                       SizedBox(
-                        height: isSmallScreen ? 50:200,
+                        height: isSmallScreen ? 50 : 100,
                       ),
                       SelectableText('Projects', style: heading),
                       JLDivider(),
@@ -222,33 +294,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         imageFirst: true,
                         isSmallScreenSize: isSmallScreen,
                       ),
-                      SizedBox(height: isSmallScreen ? 50:200),
+                      SizedBox(height: isSmallScreen ? 50 : 100),
                       SelectableText('Interests', style: heading),
                       JLDivider(),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      JLSection(
-                        heading: heading,
-                        para: para,
-                        image: 'images/rugby.jpg',
-                        paragraphText: 'A bit about my rugby "career".',
-                        title: 'Rugby',
-                        imageFirst: false,
-                        isSmallScreenSize: isSmallScreen,
-                      ),
-                      SizedBox(
-                        height: 50,
-                      ),
-                      JLSection(
-                        heading: heading,
-                        para: para,
-                        title: 'Travelling',
-                        paragraphText: 'A bit about my travels.',
-                        image: 'images/travels.jpg',
-                        imageFirst: true,
-                        isSmallScreenSize: isSmallScreen,
-                      ),
                       SizedBox(
                         height: 30,
                       ),
@@ -268,7 +316,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             },
                           ),
                           JLButton(
-                            name: "My Photos",
+                            name: "Photos",
                             onPressed: () async {
                               const url =
                                   "https://www.instagram.com/fujijlloyd/";
@@ -292,55 +340,143 @@ class _MyHomePageState extends State<MyHomePage> {
                           //     }
                           //   },
                           // ),
-                          JLButton(
-                            name: 'Playlists',
-                            onPressed: () async {
-                              const url =
-                                  "https://open.spotify.com/user/8jgj19mnukoyzb805mfibdhvk?si=B5ymIuSnRkuofMO-H_MGHA";
-                              if (await canLaunch(url)) {
-                                await launch(url);
-                              } else {
-                                throw 'Could not launch $url';
-                              }
-                            },
-                          ),
                         ],
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      JLSection(
+                        heading: heading,
+                        para: para,
+                        image: 'images/rugby.jpg',
+                        paragraphText: "I have been playing rugby since I was 5 years old and went on to play at university level. I enjoy the comradery of team sports and having a socialable way to keep fit. I love watching games with friends, in 2019 I went to Japan to watch the Rugby World Cup. I'm now looking to play in a touch rugby league in London.",
+                        title: 'Rugby',
+                        imageFirst: false,
+                        isSmallScreenSize: isSmallScreen,
+                      ),
+                      SizedBox(
+                        height: 50,
+                      ),
+                      JLSection(
+                        heading: heading,
+                        para: para,
+                        title: 'Travelling',
+                        paragraphText: "I spent the last year doing something a bit different from engineering by travelling around Latin America, learning spanish and volunteering on a permaculture ranch to gain a hands-on understanding of sustainable practices.",
+                        image: 'images/travels.jpg',
+                        imageFirst: true,
+                        isSmallScreenSize: isSmallScreen,
+                      ),
+                      SizedBox(
+                        height: 30,
                       ),
                     ],
                   ),
-                  SizedBox(height: isSmallScreen ? 50:100),
+                  SizedBox(height: isSmallScreen ? 50 : 100),
                   SelectableText(
-                    'Social Links ...',
+                    'Please reach out',
                     style: TextStyle(fontSize: 30, color: Colors.white),
                   ),
-                  Container(
-                    height: 100,
-                    child: Center(
-                      child: Row(
-                        children: [
-                          Expanded(flex: 1, child: SizedBox.shrink()),
-                          Expanded(
-                            flex: 1,
-                            child: SelectableText(
-                              'Made by James Lloyd',
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 20),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: Align(
-                              alignment: Alignment.centerLeft,
-                              child: Image(
-                                image: AssetImage(
-                                    'images/Google-flutter-logo.png'),
-                                height: 40,
-                              ),
-                            ),
-                          ),
-                        ],
+                  SizedBox(height: 10,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        icon: Icon(FontAwesomeIcons.linkedin,
+                            color: Colors.white, size: 30),
+                        onPressed: () async {
+                          const url =
+                              "https://www.linkedin.com/in/james-lloyd-748b91100/";
+                          if (await canLaunch(url)) {
+                            await launch(url);
+                          } else {
+                            throw 'Could not launch $url';
+                          }
+                        },
                       ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      IconButton(
+                        icon: Icon(FontAwesomeIcons.spotify,
+                            color: Colors.white, size: 30),
+                        onPressed: () async {
+                          const url =
+                              "https://open.spotify.com/user/8jgj19mnukoyzb805mfibdhvk?si=B5ymIuSnRkuofMO-H_MGHA";
+                          if (await canLaunch(url)) {
+                            await launch(url);
+                          } else {
+                            throw 'Could not launch $url';
+                          }
+                        },
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      IconButton(
+                        icon: Icon(FontAwesomeIcons.github,
+                            color: Colors.white, size: 30),
+                        onPressed: () async {
+                          const url = "https://github.com/jamesilloyd";
+                          if (await canLaunch(url)) {
+                            await launch(url);
+                          } else {
+                            throw 'Could not launch $url';
+                          }
+                        },
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.email, color: Colors.white, size: 30),
+                        onPressed: () async {
+                          //ToDo fix below
+                          //?subject=<subject>&body=<body>
+                          const url = 'mailto:jijlloyd98@gmail.com';
+                          final mailtoLink =
+                              Mailto(to: ['jijlloyd98@gmail.com']);
+
+                          try {
+                            // await launch(url);
+                            await launch('$mailtoLink');
+                          } catch (e) {
+                            print('error');
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 100,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SelectableText(
+                          'Made by James Lloyd using',
+                          style: para,
+                          textAlign: TextAlign.center,
+                        ),
+                        // SizedBox(
+                        //   width: 5,
+                        // ),
+                        MaterialButton(
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          onPressed: () async {
+                            const url = "https://flutter.dev/";
+                            if (await canLaunch(url)) {
+                              await launch(url);
+                            } else {
+                              throw 'Could not launch $url';
+                            }
+                          },
+                          child: Image(
+                            image: AssetImage('images/flutter.png'),
+                            // 'images/Google-flutter-logo.png'),
+                            height:max(min(40,40*MediaQuery.of(context).size.width/1440),20),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -353,158 +489,4 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class JLSection extends StatelessWidget {
-  const JLSection(
-      {Key? key,
-      required this.heading,
-      required this.para,
-      required this.title,
-      required this.paragraphText,
-      required this.image,
-      required this.isSmallScreenSize,
-      required this.imageFirst})
-      : super(key: key);
 
-  final TextStyle heading;
-  final TextStyle para;
-  final String title;
-  final String paragraphText;
-  final String image;
-  final bool imageFirst;
-  final bool isSmallScreenSize;
-
-  @override
-  Widget build(BuildContext context) {
-    return isSmallScreenSize
-        ? Column(
-            children: [
-              SelectableText(
-                title,
-                style: heading,
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Image.asset(image,
-                      width: MediaQuery.of(context).size.width * 0.7)),
-              SizedBox(
-                height: 20,
-              ),
-              SelectableText(
-                paragraphText,
-                style: para,
-                textAlign: TextAlign.justify,
-              ),
-            ],
-          )
-        : Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: imageFirst
-                ? [
-                    Flexible(
-                      flex: 1,
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: Image.asset(image,
-                              width: MediaQuery.of(context).size.width * 0.4)),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SelectableText(
-                            title,
-                            style: heading,
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          SelectableText(
-                            paragraphText,
-                            style: para,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ]
-                : [
-                    Expanded(
-                      flex: 1,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SelectableText(
-                            title,
-                            style: heading,
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          SelectableText(
-                            paragraphText,
-                            style: para,
-                          ),
-                        ],
-                      ),
-                    ),
-                    Flexible(
-                      flex: 1,
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: Image.asset(image,
-                              width: MediaQuery.of(context).size.width * 0.4)),
-                    )
-                  ],
-          );
-  }
-}
-
-class JLDivider extends StatelessWidget {
-  const JLDivider({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-        width: MediaQuery.of(context).size.width * 0.5,
-        child: Divider(
-          color: Colors.white,
-          thickness: 0.5,
-        ));
-  }
-}
-
-class JLButton extends StatelessWidget {
-  const JLButton({
-    required this.name,
-    required this.onPressed,
-  });
-
-  // PasswordErrorSelectableText({this.errorMessage});
-
-  final String name;
-  final Function() onPressed;
-  @override
-  Widget build(BuildContext context) {
-    return MaterialButton(
-      elevation: 10,
-      child: Container(
-        // color: Colors.red,
-        padding: EdgeInsets.all(10),
-        child: Text(
-          name,
-          style: TextStyle(color: Colors.white, fontSize: 20),
-        ),
-      ),
-      onPressed: onPressed,
-    );
-  }
-}

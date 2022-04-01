@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_personal_website/main.dart';
 
 class JLButton extends StatefulWidget {
   const JLButton({
@@ -62,8 +63,8 @@ class _JLButtonState extends State<JLButton> {
               width: 150,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: Colors.black,
-                  // border: Border.all(color: Colors.white, width: borderThickness),
+                  color: Color(kBackgroundGrey),
+                  border: Border.all(color: textColor, width: 0.5),
                   ),
               padding: EdgeInsets.all(10),
               child: Center(

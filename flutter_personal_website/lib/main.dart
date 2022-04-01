@@ -18,6 +18,11 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 import 'components/alignedGrid.dart';
 
+// const kBackgroundGrey = 0xff313132;
+// const kBackgroundGrey = 0xff181818;
+
+const kBackgroundGrey = 0xff272727;
+
 void main() {
   runApp(const MyApp());
 }
@@ -90,10 +95,11 @@ class _MyHomePageState extends State<MyHomePage> {
         FocusScope.of(context).requestFocus(new FocusNode());
       },
       child: Scaffold(
-        backgroundColor: Colors.black,
+        backgroundColor: const Color(kBackgroundGrey),
         appBar: AppBar(
-          backgroundColor: Colors.black,
+          backgroundColor: const Color(kBackgroundGrey),
           toolbarHeight: 75,
+          elevation: 0,
           title: Text(
             widget.title,
             style: TextStyle(fontSize: 30),

@@ -188,7 +188,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                       padding:
                                           EdgeInsets.symmetric(horizontal: 20),
                                       child: SelectableText(
-                                        "Hello, I'm James.\n\nMEng graduate in Manufacturing Engineering and Management.\n\nLooking to gain experience applying blockchain technologies to problems in sustainability and climate.",
+                                        "Hello, I'm James.\n\nMEng graduate in Manufacturing Engineering and Management from the University of Cambridge.\n\nLooking to gain experience applying blockchain technologies to problems in sustainability and climate.",
                                         style: TextStyle(
                                             fontSize: 24, color: Colors.white),
                                       ),
@@ -372,7 +372,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           para: para,
                           image: 'images/rugby.jpg',
                           paragraphText:
-                              "I have been playing rugby since I was 5 years old and went on to play at university level. I enjoy the comradery of team sports and having a socialable way to keep fit. I love watching games with friends, in 2019 I went to Japan to watch the Rugby World Cup. I'm now looking to play in a touch rugby league in London.",
+                              "I have been playing rugby since a young age and went on to play at university level. I enjoy the comradery of team sports and having a socialable way to keep fit. I love watching games with friends - in 2019 I went to Japan to watch the Rugby World Cup. I'm now looking to play in a touch rugby league in London.",
                           title: 'Rugby',
                           imageFirst: false,
                           isSmallScreenSize: isSmallScreen,

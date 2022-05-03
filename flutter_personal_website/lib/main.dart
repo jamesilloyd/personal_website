@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:open_file/open_file.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:universal_html/html.dart' as html;
+import 'package:url_strategy/url_strategy.dart';
 
 import 'components/JLButton.dart';
 import 'components/JLDivider.dart';
@@ -24,6 +25,8 @@ import 'components/alignedGrid.dart';
 const kBackgroundGrey = 0xff272727;
 
 void main() {
+
+  setPathUrlStrategy();
   runApp(const MyApp());
 }
 

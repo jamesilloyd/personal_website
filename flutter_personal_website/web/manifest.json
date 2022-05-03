@@ -1,11 +1,11 @@
 {
-    "name": "flutter_personal_website",
-    "short_name": "flutter_personal_website",
+    "name": "James Lloyd",
+    "short_name": "James Lloyd",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "James Lloyd - personal website.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

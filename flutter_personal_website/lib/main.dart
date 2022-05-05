@@ -9,6 +9,7 @@ import 'package:open_file/open_file.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:universal_html/html.dart' as html;
 import 'package:url_strategy/url_strategy.dart';
+import 'package:video_player/video_player.dart';
 
 import 'components/JLButton.dart';
 import 'components/JLDivider.dart';
@@ -18,14 +19,13 @@ import 'package:mailto/mailto.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 import 'components/alignedGrid.dart';
-
+import 'text_sections.dart';
 // const kBackgroundGrey = 0xff313132;
 // const kBackgroundGrey = 0xff181818;
 
 const kBackgroundGrey = 0xff272727;
 
 void main() {
-
   setPathUrlStrategy();
   runApp(const MyApp());
 }
@@ -62,6 +62,8 @@ class _MyHomePageState extends State<MyHomePage> {
   //TODO: needs to be dependent on screen size
   TextStyle heading = TextStyle(fontSize: 30, color: Colors.white);
   TextStyle para = TextStyle(fontSize: 18, color: Colors.white);
+  late VideoPlayerController _controller;
+  late Future<void> _initialiseVideoPlayerFuture;
 
   List<Map> experienceImages = [
     {'file': 'images/fella.png', 'url': 'https://www.joinfella.com/'},
@@ -86,6 +88,23 @@ class _MyHomePageState extends State<MyHomePage> {
       'url': 'https://www.etrust.org.uk/the-year-in-industry'
     }
   ];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    _controller = VideoPlayerController.network(
+        'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4');
+    _initialiseVideoPlayerFuture = _controller.initialize();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -159,8 +178,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   SizedBox(
                                     height: 20,
                                   ),
-                                  SelectableText(
-                                      "Hello, I'm James.\n\nMEng graduate in Manufacturing Engineering and Management.\n\nLooking to gain experience applying blockchain technologies to problems in sustainability and climate.",
+                                  SelectableText(headlineBio,
                                       textAlign: isSmallScreen
                                           ? TextAlign.center
                                           : TextAlign.left,
@@ -191,7 +209,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                       padding:
                                           EdgeInsets.symmetric(horizontal: 20),
                                       child: SelectableText(
-                                        "Hello, I'm James.\n\nMEng graduate in Manufacturing Engineering and Management from the University of Cambridge.\n\nLooking to gain experience applying blockchain technologies to problems in sustainability and climate.",
+                                        headlineBio,
                                         style: TextStyle(
                                             fontSize: 24, color: Colors.white),
                                       ),
@@ -302,8 +320,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           heading: heading,
                           para: para,
                           title: 'Genchi',
-                          paragraphText:
-                              'A platform for students to find opportunities. Aiming to empower people to create their own impact through equal access to opportunities, Genchi enables people to develop their skillset and contribute towards causes that are meaningful to them.',
+                          paragraphText: genchiText,
                           image: 'images/genchi.png',
                           imageFirst: false,
                           isSmallScreenSize: isSmallScreen,
@@ -313,11 +330,51 @@ class _MyHomePageState extends State<MyHomePage> {
                           heading: heading,
                           para: para,
                           title: 'Major Design Project\nThe Refuge Printer',
-                          paragraphText:
-                              'There are 4.6 million people currently living in managed refugee camps who are dependent on shelter for survival. 74% of existing accomodation is unsatisfactory. The Refuge Printer is a 3D printer that can build comfortable, durable, and secure accommodation to drastically improve standards of living. Unlike existing solutions, such as Better Shelter, that import flat-pack shetlers, the Refuge Printer builds shelters out of locally sourced materials, thus reducing transport costs, material costs and environmental impact, whilst stimulating local economies.',
+                          paragraphText: refugeText,
                           image: 'images/mdp.JPG',
                           imageFirst: true,
                           isSmallScreenSize: isSmallScreen,
+                        ),
+                        Container(
+                          //TODO: add in better width
+                          width: 600,
+                          child: FutureBuilder(
+                            future: _initialiseVideoPlayerFuture,
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.done) {
+                                return AspectRatio(
+                                  aspectRatio: _controller.value.aspectRatio,
+                                  child: VideoPlayer(_controller),
+                                );
+                              } else {
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              }
+                            },
+                          ),
+                        ),
+                        FloatingActionButton(
+                          onPressed: () {
+                            // Wrap the play or pause in a call to `setState`. This ensures the
+                            // correct icon is shown.
+                            setState(() {
+                              // If the video is playing, pause it.
+                              if (_controller.value.isPlaying) {
+                                _controller.pause();
+                              } else {
+                                // If the video is paused, play it.
+                                _controller.play();
+                              }
+                            });
+                          },
+                          // Display the correct icon depending on the state of the player.
+                          child: Icon(
+                            _controller.value.isPlaying
+                                ? Icons.pause
+                                : Icons.play_arrow,
+                          ),
                         ),
                         SizedBox(height: isSmallScreen ? 50 : 100),
                         SelectableText('Interests', style: heading),
@@ -353,6 +410,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               },
                             ),
                             //TODO: add this in later
+
                             // JLButton(
                             //   name: 'Travels in Guatemala',
                             //   onPressed: () async {
@@ -374,8 +432,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           heading: heading,
                           para: para,
                           image: 'images/rugby.jpg',
-                          paragraphText:
-                              "I have been playing rugby since a young age and went on to play at university level. I enjoy the comradery of team sports and having a socialable way to keep fit. I love watching games with friends - in 2019 I went to Japan to watch the Rugby World Cup. I'm now looking to play in a touch rugby league in London.",
+                          paragraphText: rugbyText,
                           title: 'Rugby',
                           imageFirst: false,
                           isSmallScreenSize: isSmallScreen,
@@ -387,8 +444,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           heading: heading,
                           para: para,
                           title: 'Travelling',
-                          paragraphText:
-                              "I spent the last year doing something a bit different from engineering by travelling around Latin America, learning spanish and volunteering on a permaculture ranch to gain a hands-on understanding of sustainable practices.",
+                          paragraphText: travelingText,
                           image: 'images/travels.jpg',
                           imageFirst: true,
                           isSmallScreenSize: isSmallScreen,
@@ -399,13 +455,13 @@ class _MyHomePageState extends State<MyHomePage> {
                       ],
                     ),
                     SizedBox(height: isSmallScreen ? 50 : 100),
-                    SelectableText(
-                      'Please reach out',
-                      style: TextStyle(fontSize: 30, color: Colors.white),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
+                    // SelectableText(
+                    //   'Please reach out',
+                    //   style: TextStyle(fontSize: 30, color: Colors.white),
+                    // ),
+                    // SizedBox(
+                    //   height: 10,
+                    // ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [

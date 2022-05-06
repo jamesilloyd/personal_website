@@ -63,7 +63,9 @@ class _MyHomePageState extends State<MyHomePage> {
   TextStyle heading = TextStyle(fontSize: 30, color: Colors.white);
   TextStyle para = TextStyle(fontSize: 18, color: Colors.white);
   late VideoPlayerController _controller;
+  late VideoPlayerController _controller2;
   late Future<void> _initialiseVideoPlayerFuture;
+  late Future<void> _initialiseVideoPlayerFuture2;
 
   List<Map> experienceImages = [
     {'file': 'images/fella.png', 'url': 'https://www.joinfella.com/'},
@@ -94,15 +96,18 @@ class _MyHomePageState extends State<MyHomePage> {
     // TODO: implement initState
     super.initState();
 
-    _controller = VideoPlayerController.network(
-        'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4');
+    _controller = VideoPlayerController.asset('files/explode.mp4');
+    _controller2 = VideoPlayerController.asset('files/build.mp4');
     _initialiseVideoPlayerFuture = _controller.initialize();
+    _initialiseVideoPlayerFuture2 = _controller2.initialize();
+    
   }
 
   @override
   void dispose() {
     // TODO: implement dispose
     _controller.dispose();
+    _controller2.dispose();
     super.dispose();
   }
 
@@ -313,7 +318,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                         SelectableText('Projects', style: heading),
                         JLDivider(),
-                        SizedBox(
+                        const SizedBox(
                           height: 30,
                         ),
                         JLSection(
@@ -335,46 +340,63 @@ class _MyHomePageState extends State<MyHomePage> {
                           imageFirst: true,
                           isSmallScreenSize: isSmallScreen,
                         ),
-                        Container(
-                          //TODO: add in better width
-                          width: 600,
-                          child: FutureBuilder(
-                            future: _initialiseVideoPlayerFuture,
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.done) {
-                                return AspectRatio(
-                                  aspectRatio: _controller.value.aspectRatio,
-                                  child: VideoPlayer(_controller),
-                                );
-                              } else {
-                                return const Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              }
-                            },
-                          ),
-                        ),
-                        FloatingActionButton(
-                          onPressed: () {
-                            // Wrap the play or pause in a call to `setState`. This ensures the
-                            // correct icon is shown.
-                            setState(() {
-                              // If the video is playing, pause it.
-                              if (_controller.value.isPlaying) {
-                                _controller.pause();
-                              } else {
-                                // If the video is paused, play it.
-                                _controller.play();
-                              }
-                            });
-                          },
-                          // Display the correct icon depending on the state of the player.
-                          child: Icon(
-                            _controller.value.isPlaying
-                                ? Icons.pause
-                                : Icons.play_arrow,
-                          ),
+                        SizedBox(height: 30),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Column(
+                              children: [
+                                Container(
+                                  //TODO: add in better width
+                                  height: 300,
+                                  child: FutureBuilder(
+                                    future: _initialiseVideoPlayerFuture,
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.done) {
+                                        return AspectRatio(
+                                          aspectRatio: _controller.value.aspectRatio,
+                                          child: VideoPlayer(_controller),
+                                        );
+                                      } else {
+                                        return const Center(
+                                          child: CircularProgressIndicator(),
+                                        );
+                                      }
+                                    },
+                                  ),
+                                ),
+                                SizedBox(height: 30,),
+                                JLPausePlay(onPressed: (){},controller: _controller,),
+                              ],
+                            ),
+                            Column(
+                              children: [
+                                Container(
+                                  //TODO: add in better width
+                                  height: 300,
+                                  child: FutureBuilder(
+                                    future: _initialiseVideoPlayerFuture2,
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.done) {
+                                        return AspectRatio(
+                                          aspectRatio: _controller2.value.aspectRatio,
+                                          child: VideoPlayer(_controller2),
+                                        );
+                                      } else {
+                                        return const Center(
+                                          child: CircularProgressIndicator(),
+                                        );
+                                      }
+                                    },
+                                  ),
+                                ),
+                                SizedBox(height: 30,),
+                                JLPausePlay(onPressed: (){},controller: _controller2,),
+                              ],
+                            ),
+                          ],
                         ),
                         SizedBox(height: isSmallScreen ? 50 : 100),
                         SelectableText('Interests', style: heading),

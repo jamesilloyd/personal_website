@@ -341,14 +341,71 @@ class _MyHomePageState extends State<MyHomePage> {
                           isSmallScreenSize: isSmallScreen,
                         ),
                         SizedBox(height: 30),
-                        Row(
+                        isSmallScreen? Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             Column(
                               children: [
                                 Container(
                                   //TODO: add in better width
-                                  height: 300,
+                                  width:MediaQuery.of(context).size.width*0.7,
+                                  child: FutureBuilder(
+                                    future: _initialiseVideoPlayerFuture,
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.done) {
+                                        return AspectRatio(
+                                          aspectRatio: _controller.value.aspectRatio,
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(20),
+                                            child: VideoPlayer(_controller)),
+                                        );
+                                      } else {
+                                        return const Center(
+                                          child: CircularProgressIndicator(),
+                                        );
+                                      }
+                                    },
+                                  ),
+                                ),
+                                SizedBox(height: 10,),
+                                JLPausePlay(onPressed: (){},controller: _controller,),
+                                SizedBox(height: 20),
+                                Container(
+                                  //TODO: add in better width
+                                  width:MediaQuery.of(context).size.width*0.7,
+                                  child: FutureBuilder(
+                                    future: _initialiseVideoPlayerFuture2,
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.done) {
+                                        return AspectRatio(
+                                          aspectRatio: _controller2.value.aspectRatio,
+                                          child: ClipRRect(borderRadius: BorderRadius.circular(20),
+                                          child: VideoPlayer(_controller2)),
+                                        );
+                                      } else {
+                                        return const Center(
+                                          child: CircularProgressIndicator(),
+                                        );
+                                      }
+                                    },
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                JLPausePlay(onPressed: (){},controller: _controller2,),
+                              ],
+                            ),
+                    
+                          ],
+                        ):Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Column(
+                              children: [
+                                Container(
+                                  //TODO: add in better width
+                                  height:MediaQuery.of(context).size.width*0.27,
                                   child: FutureBuilder(
                                     future: _initialiseVideoPlayerFuture,
                                     builder: (context, snapshot) {
@@ -374,7 +431,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               children: [
                                 Container(
                                   //TODO: add in better width
-                                  height: 300,
+                                  height: MediaQuery.of(context).size.width*0.27,
                                   child: FutureBuilder(
                                     future: _initialiseVideoPlayerFuture2,
                                     builder: (context, snapshot) {
@@ -398,6 +455,8 @@ class _MyHomePageState extends State<MyHomePage> {
                             ),
                           ],
                         ),
+                        SizedBox(height: 30,),
+                        SelectableText('More to be added...', style: heading),
                         SizedBox(height: isSmallScreen ? 50 : 100),
                         SelectableText('Interests', style: heading),
                         JLDivider(),
@@ -447,6 +506,9 @@ class _MyHomePageState extends State<MyHomePage> {
                             // ),
                           ],
                         ),
+                        
+
+
                         SizedBox(
                           height: 30,
                         ),

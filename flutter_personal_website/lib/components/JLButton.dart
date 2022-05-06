@@ -136,6 +136,11 @@ class _JLPausePlayState extends State<JLPausePlay> {
   @override
   Widget build(BuildContext context) {
     // return MouseCursor();
+    if(widget.controller.value.isPlaying) {
+      isPlaying = true;
+    }else{
+      isPlaying = false;
+    }
     return MouseRegion(
       onEnter: _incrementEnter,
       onHover: _updateLocation,

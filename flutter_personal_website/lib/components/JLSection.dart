@@ -57,7 +57,7 @@ class JLSection extends StatelessWidget {
                       Flexible(
                         flex: 1,
                         child: ClipRRect(
-                            borderRadius: BorderRadius.circular(20),
+                            // borderRadius: BorderRadius.circular(20),
                             child: Image.asset(image,
                                 width:
                                     MediaQuery.of(context).size.width * 0.4)),
@@ -109,7 +109,7 @@ class JLSection extends StatelessWidget {
                       Flexible(
                         flex: 1,
                         child: ClipRRect(
-                            borderRadius: BorderRadius.circular(20),
+                            // borderRadius: BorderRadius.circular(20),
                             child: Image.asset(image,
                                 width:
                                     MediaQuery.of(context).size.width * 0.4)),

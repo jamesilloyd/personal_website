@@ -192,7 +192,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               )
                             : Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   SizedBox(
                                     // width: MediaQuery.of(context).size.width*0.1,
@@ -215,7 +215,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                           EdgeInsets.symmetric(horizontal: 20),
                                       child: SelectableText(
                                         headlineBio,
+                                        textAlign: TextAlign.center,
                                         style: TextStyle(
+                                          
                                             fontSize: 24, color: Colors.white),
                                       ),
                                     ),

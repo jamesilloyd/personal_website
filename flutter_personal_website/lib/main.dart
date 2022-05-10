@@ -23,7 +23,8 @@ import 'text_sections.dart';
 // const kBackgroundGrey = 0xff313132;
 // const kBackgroundGrey = 0xff181818;
 
-const kBackgroundGrey = 0xff272727;
+// const kBackgroundGrey = 0xff272727;
+const kBackgroundGrey = 0xff1E1F21;
 
 void main() {
   setPathUrlStrategy();

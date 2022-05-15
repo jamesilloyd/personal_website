@@ -459,7 +459,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           ],
                         ),
                         SizedBox(height: 30,),
-                        SelectableText('More to be added... \n\nIncluding an NFT Marketplace and Defection Dection using Computer Vision', style: heading, textAlign: TextAlign.center,),
+                        SelectableText('More to be added... \n\nIncluding an NFT Marketplace and Defective Parts Dection using Computer Vision', style: heading, textAlign: TextAlign.center,),
                         SizedBox(height: isSmallScreen ? 50 : 100),
                         SelectableText('Blog', style: heading),
                         JLDivider(),

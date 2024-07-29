@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pdf/pdf.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -39,12 +38,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'James Lloyd',
       theme: ThemeData(
-          primarySwatch: Colors.red,
-          fontFamily: 'Futura',
-          highlightColor: Colors.white
-          // textSelectionTheme: TextSelectionThemeData(
-          // selectionColor: Colors.red[300]?.withOpacity(0.5)),
-          ),
+        primarySwatch: Colors.red,
+        fontFamily: 'Futura',
+        highlightColor: Colors.white,
+        textSelectionTheme: TextSelectionThemeData(
+            selectionColor: Colors.red[300]?.withOpacity(0.5)),
+      ),
       home: const MyHomePage(title: 'James Lloyd'),
     );
   }
@@ -68,7 +67,10 @@ class _MyHomePageState extends State<MyHomePage> {
   late Future<void> _initialiseVideoPlayerFuture;
   late Future<void> _initialiseVideoPlayerFuture2;
 
+  final ScrollController _scrollController = ScrollController();
+
   List<Map> experienceImages = [
+    {'file': 'images/safi.png', 'url': 'https://www.safi.co/'},
     {'file': 'images/fella.png', 'url': 'https://www.joinfella.com/'},
     {'file': 'images/fetch.png', 'url': 'https://fetch.ai/'},
     {'file': 'images/festo.png', 'url': 'https://festo.com/'},
@@ -80,7 +82,6 @@ class _MyHomePageState extends State<MyHomePage> {
       'url':
           'https://www.raeng.org.uk/grants-prizes/grants/schemes-for-students/engineering-leaders-scholarship'
     },
-    {'file': 'images/ff.png', 'url': ''},
     {
       'file': 'images/iet.png',
       'url':
@@ -101,7 +102,6 @@ class _MyHomePageState extends State<MyHomePage> {
     _controller2 = VideoPlayerController.asset('files/build.mp4');
     _initialiseVideoPlayerFuture = _controller.initialize();
     _initialiseVideoPlayerFuture2 = _controller2.initialize();
-    
   }
 
   @override
@@ -109,6 +109,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // TODO: implement dispose
     _controller.dispose();
     _controller2.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -128,14 +129,22 @@ class _MyHomePageState extends State<MyHomePage> {
           backgroundColor: const Color(kBackgroundGrey),
           toolbarHeight: 75,
           elevation: 0,
+          automaticallyImplyLeading: false,
           title: Text(
             widget.title,
-            style: TextStyle(fontSize: 30),
+            style: TextStyle(fontSize: 30, color: Colors.white),
+          ),
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+              color: Color(kBackgroundGrey),
+            ),
           ),
         ),
         body: Scrollbar(
+          controller: _scrollController,
           child: ListView(
-            padding: EdgeInsets.symmetric(horizontal: 60),
+            controller: _scrollController,
+            padding: EdgeInsets.symmetric(horizontal: needs2Columns ? 40 : 80),
             children: [
               SizedBox(
                 // color: Colors.red,
@@ -167,7 +176,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           style: heading,
                         ),
                         JLDivider(),
-                        SizedBox(
+                        const SizedBox(
                           height: 30,
                         ),
                         isSmallScreen
@@ -181,7 +190,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                           0.4,
                                     ),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 20,
                                   ),
                                   SelectableText(headlineBio,
@@ -195,10 +204,6 @@ class _MyHomePageState extends State<MyHomePage> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  SizedBox(
-                                    // width: MediaQuery.of(context).size.width*0.1,
-                                    width: 20,
-                                  ),
                                   ClipRRect(
                                     borderRadius: BorderRadius.circular(20),
                                     child: Image.asset(
@@ -211,14 +216,13 @@ class _MyHomePageState extends State<MyHomePage> {
                                     // color: Colors.blue,
                                     width:
                                         MediaQuery.of(context).size.width * 0.5,
-                                    child: Padding(
+                                    child: const Padding(
                                       padding:
                                           EdgeInsets.symmetric(horizontal: 20),
                                       child: SelectableText(
                                         headlineBio,
-                                        textAlign: TextAlign.center,
+                                        textAlign: TextAlign.left,
                                         style: TextStyle(
-                                          
                                             fontSize: 24, color: Colors.white),
                                       ),
                                     ),
@@ -228,39 +232,39 @@ class _MyHomePageState extends State<MyHomePage> {
                         SizedBox(height: isSmallScreen ? 50 : 100),
                         SelectableText('Experience', style: heading),
                         JLDivider(),
-                        SizedBox(
+                        const SizedBox(
                           height: 30,
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            JLButton(
-                              name: 'CV',
-                              onPressed: () async {
-                                //TODO: look at this as I cannot download it
-                                // final pdf = pw.Document();
-                                // pdf.addPage(pw.Page(pageFormat: PdfPageFormat.a4,build: (pw.Context context) {
-                                //   return pw.Center(child: pw.SelectableText('Hello World'),);
-                                // }));
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        //   children: [
+                        //     JLButton(
+                        //       name: 'CV',
+                        //       onPressed: () async {
+                        //         //TODO: look at this as I cannot download it
+                        //         // final pdf = pw.Document();
+                        //         // pdf.addPage(pw.Page(pageFormat: PdfPageFormat.a4,build: (pw.Context context) {
+                        //         //   return pw.Center(child: pw.SelectableText('Hello World'),);
+                        //         // }));
 
-                                // final bytes = await pdf.save();
+                        //         // final bytes = await pdf.save();
 
-                                final bytes = await rootBundle.load(
-                                    "files/CV.pdf"); // location of your asset file
+                        //         final bytes = await rootBundle.load(
+                        //             "files/CV.pdf"); // location of your asset file
 
-                                final blob =
-                                    html.Blob([bytes], 'application/pdf');
-                                final url =
-                                    html.Url.createObjectUrlFromBlob(blob);
-                                html.window.open(url, '_blank');
-                                html.Url.revokeObjectUrl(url);
+                        //         final blob =
+                        //             html.Blob([bytes], 'application/pdf');
+                        //         final url =
+                        //             html.Url.createObjectUrlFromBlob(blob);
+                        //         html.window.open(url, '_blank');
+                        //         html.Url.revokeObjectUrl(url);
 
-                                // OpenFile.open("files/CV.pdf");
-                              },
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 20),
+                        //         // OpenFile.open("files/CV.pdf");
+                        //       },
+                        //     ),
+                        //   ],
+                        // ),
+                        // const SizedBox(height: 20),
                         Center(
                           child: AlignedGrid(
                             gridList: experienceImages,
@@ -270,51 +274,6 @@ class _MyHomePageState extends State<MyHomePage> {
                                     ? 4
                                     : 3,
                           ),
-
-                          // child: GridView.count(
-                          //   shrinkWrap: true,
-
-                          //   crossAxisCount: isSmallScreen ? 2 : isLargeScreen ? 4 : 3,
-                          //   children:
-                          //       List.generate(experienceImages.length, (index) {
-
-                          //     //If we have 3 widgets we want to centre the last if % = 1
-                          //     //If we have 4 widgets we want to cetnre the last if % = 2
-                          //     return Padding(
-                          //         padding: const EdgeInsets.all(20.0),
-                          //         child: ElevatedButton(
-                          //             style: ElevatedButton.styleFrom(
-                          //               primary: Colors.white,
-                          //               padding: EdgeInsets.all(0),
-                          //               shape: RoundedRectangleBorder(
-                          //                   borderRadius:
-                          //                       BorderRadius.circular(20)),
-                          //             ),
-                          //             onPressed: () async {
-                          //               var url = experienceImages[index]['url'];
-                          //               if (await canLaunch(url)) {
-                          //                 await launch(url);
-                          //               } else {
-                          //                 throw 'Could not launch $url';
-                          //               }
-                          //             },
-                          //             child: Container(
-                          //               decoration: BoxDecoration(
-                          //                 borderRadius: BorderRadius.circular(20),
-                          //                 image: DecorationImage(fit:BoxFit.fitWidth,
-                          //                 image: Image.asset(experienceImages[index]['file']).image)
-                          //               ),
-                          //             )
-                          //             // child: ClipRRect(
-                          //             //     borderRadius: BorderRadius.circular(20),
-                          //             //     child: FittedBox(
-                          //             //       fit: BoxFit.contain,
-                          //             //       child: Image.asset(
-                          //             //           experienceImages[index]['file'],),
-                          //             //     )),
-                          //             ));
-                          //   }),
-                          // ),
                         ),
                         SizedBox(
                           height: isSmallScreen ? 50 : 100,
@@ -329,7 +288,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           para: para,
                           title: 'Genchi',
                           paragraphText: genchiText,
-                          image: 'images/genchi.png',
+                          image: 'images/genchi.jpg',
                           imageFirst: false,
                           isSmallScreenSize: isSmallScreen,
                         ),
@@ -344,216 +303,280 @@ class _MyHomePageState extends State<MyHomePage> {
                           isSmallScreenSize: isSmallScreen,
                         ),
                         SizedBox(height: 30),
-                        isSmallScreen? Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Column(
-                              children: [
-                                Container(
-                                  //TODO: add in better width
-                                  width:MediaQuery.of(context).size.width*0.7,
-                                  child: FutureBuilder(
-                                    future: _initialiseVideoPlayerFuture,
-                                    builder: (context, snapshot) {
-                                      if (snapshot.connectionState ==
-                                          ConnectionState.done) {
-                                        return AspectRatio(
-                                          aspectRatio: _controller.value.aspectRatio,
-                                          child: ClipRRect(
-                                            borderRadius: BorderRadius.circular(20),
-                                            child: VideoPlayer(_controller)),
-                                        );
-                                      } else {
-                                        return const Center(
-                                          child: CircularProgressIndicator(),
-                                        );
-                                      }
-                                    },
+                        isSmallScreen
+                            ? Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Column(
+                                    children: [
+                                      Container(
+                                        //TODO: add in better width
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.7,
+                                        child: FutureBuilder(
+                                          future: _initialiseVideoPlayerFuture,
+                                          builder: (context, snapshot) {
+                                            if (snapshot.connectionState ==
+                                                ConnectionState.done) {
+                                              return AspectRatio(
+                                                aspectRatio: _controller
+                                                    .value.aspectRatio,
+                                                child: ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20),
+                                                    child: VideoPlayer(
+                                                        _controller)),
+                                              );
+                                            } else {
+                                              return const Center(
+                                                child:
+                                                    CircularProgressIndicator(),
+                                              );
+                                            }
+                                          },
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      JLPausePlay(
+                                        onPressed: () {},
+                                        controller: _controller,
+                                      ),
+                                      SizedBox(height: 20),
+                                      Container(
+                                        //TODO: add in better width
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.7,
+                                        child: FutureBuilder(
+                                          future: _initialiseVideoPlayerFuture2,
+                                          builder: (context, snapshot) {
+                                            if (snapshot.connectionState ==
+                                                ConnectionState.done) {
+                                              return AspectRatio(
+                                                aspectRatio: _controller2
+                                                    .value.aspectRatio,
+                                                child: ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20),
+                                                    child: VideoPlayer(
+                                                        _controller2)),
+                                              );
+                                            } else {
+                                              return const Center(
+                                                child:
+                                                    CircularProgressIndicator(),
+                                              );
+                                            }
+                                          },
+                                        ),
+                                      ),
+                                      SizedBox(height: 10),
+                                      JLPausePlay(
+                                        onPressed: () {},
+                                        controller: _controller2,
+                                      ),
+                                    ],
                                   ),
-                                ),
-                                SizedBox(height: 10,),
-                                JLPausePlay(onPressed: (){},controller: _controller,),
-                                SizedBox(height: 20),
-                                Container(
-                                  //TODO: add in better width
-                                  width:MediaQuery.of(context).size.width*0.7,
-                                  child: FutureBuilder(
-                                    future: _initialiseVideoPlayerFuture2,
-                                    builder: (context, snapshot) {
-                                      if (snapshot.connectionState ==
-                                          ConnectionState.done) {
-                                        return AspectRatio(
-                                          aspectRatio: _controller2.value.aspectRatio,
-                                          child: ClipRRect(borderRadius: BorderRadius.circular(20),
-                                          child: VideoPlayer(_controller2)),
-                                        );
-                                      } else {
-                                        return const Center(
-                                          child: CircularProgressIndicator(),
-                                        );
-                                      }
-                                    },
+                                ],
+                              )
+                            : Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    children: [
+                                      Container(
+                                        //TODO: add in better width
+                                        height:
+                                            MediaQuery.of(context).size.width *
+                                                0.27,
+                                        child: FutureBuilder(
+                                          future: _initialiseVideoPlayerFuture,
+                                          builder: (context, snapshot) {
+                                            if (snapshot.connectionState ==
+                                                ConnectionState.done) {
+                                              return AspectRatio(
+                                                aspectRatio: _controller
+                                                    .value.aspectRatio,
+                                                child: ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20),
+                                                    child: VideoPlayer(
+                                                        _controller)),
+                                              );
+                                            } else {
+                                              return const Center(
+                                                child:
+                                                    CircularProgressIndicator(),
+                                              );
+                                            }
+                                          },
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 30,
+                                      ),
+                                      JLPausePlay(
+                                        onPressed: () {},
+                                        controller: _controller,
+                                      ),
+                                    ],
                                   ),
-                                ),
-                                SizedBox(height: 10),
-                                JLPausePlay(onPressed: (){},controller: _controller2,),
-                              ],
-                            ),
-                    
-                          ],
-                        ):Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Column(
-                              children: [
-                                Container(
-                                  //TODO: add in better width
-                                  height:MediaQuery.of(context).size.width*0.27,
-                                  child: FutureBuilder(
-                                    future: _initialiseVideoPlayerFuture,
-                                    builder: (context, snapshot) {
-                                      if (snapshot.connectionState ==
-                                          ConnectionState.done) {
-                                        return AspectRatio(
-                                          aspectRatio: _controller.value.aspectRatio,
-                                          child: VideoPlayer(_controller),
-                                        );
-                                      } else {
-                                        return const Center(
-                                          child: CircularProgressIndicator(),
-                                        );
-                                      }
-                                    },
+                                  Column(
+                                    children: [
+                                      Container(
+                                        //TODO: add in better width
+                                        height:
+                                            MediaQuery.of(context).size.width *
+                                                0.27,
+                                        child: FutureBuilder(
+                                          future: _initialiseVideoPlayerFuture2,
+                                          builder: (context, snapshot) {
+                                            if (snapshot.connectionState ==
+                                                ConnectionState.done) {
+                                              return AspectRatio(
+                                                aspectRatio: _controller2
+                                                    .value.aspectRatio,
+                                                child: ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20),
+                                                    child: VideoPlayer(
+                                                        _controller2)),
+                                              );
+                                            } else {
+                                              return const Center(
+                                                child:
+                                                    CircularProgressIndicator(),
+                                              );
+                                            }
+                                          },
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 30,
+                                      ),
+                                      JLPausePlay(
+                                        onPressed: () {},
+                                        controller: _controller2,
+                                      ),
+                                    ],
                                   ),
-                                ),
-                                SizedBox(height: 30,),
-                                JLPausePlay(onPressed: (){},controller: _controller,),
-                              ],
-                            ),
-                            Column(
-                              children: [
-                                Container(
-                                  //TODO: add in better width
-                                  height: MediaQuery.of(context).size.width*0.27,
-                                  child: FutureBuilder(
-                                    future: _initialiseVideoPlayerFuture2,
-                                    builder: (context, snapshot) {
-                                      if (snapshot.connectionState ==
-                                          ConnectionState.done) {
-                                        return AspectRatio(
-                                          aspectRatio: _controller2.value.aspectRatio,
-                                          child: VideoPlayer(_controller2),
-                                        );
-                                      } else {
-                                        return const Center(
-                                          child: CircularProgressIndicator(),
-                                        );
-                                      }
-                                    },
-                                  ),
-                                ),
-                                SizedBox(height: 30,),
-                                JLPausePlay(onPressed: (){},controller: _controller2,),
-                              ],
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 30,),
-                        SelectableText('More to be added... \n\nIncluding an NFT Marketplace and Defective Parts Dection using Computer Vision', style: heading, textAlign: TextAlign.center,),
-                        SizedBox(height: isSmallScreen ? 50 : 100),
-                        SelectableText('Blog', style: heading),
-                        JLDivider(),
-                        SizedBox(height: 30,),
-                        SelectableText('Coming very soon...', style: heading, textAlign: TextAlign.center,),
-                        SizedBox(height: isSmallScreen ? 50 : 100),
-                        SelectableText('Interests', style: heading),
-                        JLDivider(),
-                        SizedBox(
-                          height: 30,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            JLButton(
-                              name: 'Reading',
-                              onPressed: () async {
-                                const url =
-                                    "https://jameslloyd.notion.site/Read-Books-84f527d45fe7496b889f9a742cee26a6";
-                                if (await canLaunch(url)) {
-                                  await launch(url);
-                                } else {
-                                  throw 'Could not launch $url';
-                                }
-                              },
-                            ),
-                            JLButton(
-                              name: "Photography",
-                              onPressed: () async {
-                                const url =
-                                    "https://www.instagram.com/fujijlloyd/";
-                                if (await canLaunch(url)) {
-                                  await launch(url);
-                                } else {
-                                  throw 'Could not launch $url';
-                                }
-                              },
-                            ),
-                            //TODO: add this in later
-
-                            // JLButton(
-                            //   name: 'Travels in Guatemala',
-                            //   onPressed: () async {
-                            //     const url =
-                            //         "https://jameslloyd.notion.site/Guatemala-69c45eeb29af45b4a929d876d346291d";
-                            //     if (await canLaunch(url)) {
-                            //       await launch(url);
-                            //     } else {
-                            //       throw 'Could not launch $url';
-                            //     }
-                            //   },
-                            // ),
-                          ],
-                        ),
-                        
-
-
-                        SizedBox(
-                          height: 30,
-                        ),
-                        JLSection(
-                          heading: heading,
-                          para: para,
-                          image: 'images/rugby.jpg',
-                          paragraphText: rugbyText,
-                          title: 'Rugby',
-                          imageFirst: false,
-                          isSmallScreenSize: isSmallScreen,
-                        ),
+                                ],
+                              ),
                         SizedBox(
                           height: 50,
                         ),
-                        JLSection(
-                          heading: heading,
-                          para: para,
-                          title: 'Travelling',
-                          paragraphText: travelingText,
-                          image: 'images/travels.jpg',
-                          imageFirst: true,
-                          isSmallScreenSize: isSmallScreen,
-                        ),
-                        SizedBox(
-                          height: 30,
-                        ),
+                        SelectableText.rich(TextSpan(children: <TextSpan>[
+                          TextSpan(
+                              text: 'More to be added, including:\n',
+                              style: heading),
+                          TextSpan(text: '\u2022 ', style: heading),
+                          TextSpan(text: 'An AI Agent application to Distributed Manufacturing\n', style: heading),
+                          TextSpan(text: '\u2022 ', style: heading),
+                          TextSpan(text: 'Defective Parts Detection using Computer Vision (OpenCV and TensorFlow)\n', style: heading),
+                          TextSpan(text: '\u2022 ', style: heading),
+                          TextSpan(text: 'Robotics competition using C++ and Arduino\n', style: heading),
+                        ])),
+                        SizedBox(height: isSmallScreen ? 50 : 100),
+                        // SelectableText('Blog', style: heading),
+                        JLDivider(),
+                        // SizedBox(height: 30,),
+                        // SelectableText('Coming very soon...', style: heading, textAlign: TextAlign.center,),
+                        // SizedBox(height: isSmallScreen ? 50 : 100),
+                        // SelectableText('Interests', style: heading),
+                        // JLDivider(),
+                        // SizedBox(
+                        //   height: 30,
+                        // ),
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        //   children: [
+                        //     JLButton(
+                        //       name: 'Reading',
+                        //       onPressed: () async {
+                        //         const url =
+                        //             "https://jameslloyd.notion.site/Read-Books-84f527d45fe7496b889f9a742cee26a6";
+                        //         if (await canLaunch(url)) {
+                        //           await launch(url);
+                        //         } else {
+                        //           throw 'Could not launch $url';
+                        //         }
+                        //       },
+                        //     ),
+                        //     JLButton(
+                        //       name: "Photography",
+                        //       onPressed: () async {
+                        //         const url =
+                        //             "https://www.instagram.com/fujijlloyd/";
+                        //         if (await canLaunch(url)) {
+                        //           await launch(url);
+                        //         } else {
+                        //           throw 'Could not launch $url';
+                        //         }
+                        //       },
+                        //     ),
+                        //     //TODO: add this in later
+
+                        //     // JLButton(
+                        //     //   name: 'Travels in Guatemala',
+                        //     //   onPressed: () async {
+                        //     //     const url =
+                        //     //         "https://jameslloyd.notion.site/Guatemala-69c45eeb29af45b4a929d876d346291d";
+                        //     //     if (await canLaunch(url)) {
+                        //     //       await launch(url);
+                        //     //     } else {
+                        //     //       throw 'Could not launch $url';
+                        //     //     }
+                        //     //   },
+                        //     // ),
+                        //   ],
+                        // ),
+
+                        // SizedBox(
+                        //   height: 30,
+                        // ),
+                        // JLSection(
+                        //   heading: heading,
+                        //   para: para,
+                        //   image: 'images/rugby.jpg',
+                        //   paragraphText: rugbyText,
+                        //   title: 'Rugby',
+                        //   imageFirst: false,
+                        //   isSmallScreenSize: isSmallScreen,
+                        // ),
+                        // SizedBox(
+                        //   height: 50,
+                        // ),
+                        // JLSection(
+                        //   heading: heading,
+                        //   para: para,
+                        //   title: 'Travelling',
+                        //   paragraphText: travelingText,
+                        //   image: 'images/travels.jpg',
+                        //   imageFirst: true,
+                        //   isSmallScreenSize: isSmallScreen,
+                        // ),
+                        // SizedBox(
+                        //   height: 30,
+                        // ),
                       ],
                     ),
-                    SizedBox(height: isSmallScreen ? 50 : 100),
+                    // SizedBox(height: isSmallScreen ? 50 : 100),
                     // SelectableText(
                     //   'Please reach out',
                     //   style: TextStyle(fontSize: 30, color: Colors.white),
                     // ),
-                    // SizedBox(
-                    //   height: 10,
-                    // ),
+                    SizedBox(
+                      height: 10,
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -572,35 +595,35 @@ class _MyHomePageState extends State<MyHomePage> {
                         SizedBox(
                           width: 20,
                         ),
-                        JLIconButton(
-                          icon: FontAwesomeIcons.spotify,
-                          onPressed: () async {
-                            const url =
-                                "https://open.spotify.com/user/8jgj19mnukoyzb805mfibdhvk?si=B5ymIuSnRkuofMO-H_MGHA";
-                            if (await canLaunch(url)) {
-                              await launch(url);
-                            } else {
-                              throw 'Could not launch $url';
-                            }
-                          },
-                        ),
-                        SizedBox(
-                          width: 20,
-                        ),
-                        JLIconButton(
-                          icon: FontAwesomeIcons.github,
-                          onPressed: () async {
-                            const url = "https://github.com/jamesilloyd";
-                            if (await canLaunch(url)) {
-                              await launch(url);
-                            } else {
-                              throw 'Could not launch $url';
-                            }
-                          },
-                        ),
-                        SizedBox(
-                          width: 20,
-                        ),
+                        // JLIconButton(
+                        //   icon: FontAwesomeIcons.spotify,
+                        //   onPressed: () async {
+                        //     const url =
+                        //         "https://open.spotify.com/user/8jgj19mnukoyzb805mfibdhvk?si=B5ymIuSnRkuofMO-H_MGHA";
+                        //     if (await canLaunch(url)) {
+                        //       await launch(url);
+                        //     } else {
+                        //       throw 'Could not launch $url';
+                        //     }
+                        //   },
+                        // ),
+                        // SizedBox(
+                        //   width: 20,
+                        // ),
+                        // JLIconButton(
+                        //   icon: FontAwesomeIcons.github,
+                        //   onPressed: () async {
+                        //     const url = "https://github.com/jamesilloyd";
+                        //     if (await canLaunch(url)) {
+                        //       await launch(url);
+                        //     } else {
+                        //       throw 'Could not launch $url';
+                        //     }
+                        //   },
+                        // ),
+                        // SizedBox(
+                        //   width: 20,
+                        // ),
                         JLIconButton(
                           icon: Icons.email,
                           onPressed: () async {
@@ -626,33 +649,33 @@ class _MyHomePageState extends State<MyHomePage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           SelectableText(
-                            'Made by James Lloyd using',
+                            'Made by James Lloyd',
                             style: para,
                             textAlign: TextAlign.center,
                           ),
-                          MaterialButton(
-                            splashColor: Colors.transparent,
-                            highlightColor: Colors.transparent,
-                            onPressed: () async {
-                              const url = "https://flutter.dev/";
-                              if (await canLaunch(url)) {
-                                await launch(url);
-                              } else {
-                                throw 'Could not launch $url';
-                              }
-                            },
-                            child: Image(
-                              image: AssetImage('images/flutter.png'),
-                              // 'images/Google-flutter-logo.png'),
-                              height: max(
-                                  min(
-                                      40,
-                                      40 *
-                                          MediaQuery.of(context).size.width /
-                                          1440),
-                                  20),
-                            ),
-                          ),
+                          // MaterialButton(
+                          //   splashColor: Colors.transparent,
+                          //   highlightColor: Colors.transparent,
+                          //   onPressed: () async {
+                          //     const url = "https://flutter.dev/";
+                          //     if (await canLaunch(url)) {
+                          //       await launch(url);
+                          //     } else {
+                          //       throw 'Could not launch $url';
+                          //     }
+                          //   },
+                          //   child: Image(
+                          //     image: AssetImage('images/flutter.png'),
+                          //     // 'images/Google-flutter-logo.png'),
+                          //     height: max(
+                          //         min(
+                          //             40,
+                          //             40 *
+                          //                 MediaQuery.of(context).size.width /
+                          //                 1440),
+                          //         20),
+                          //   ),
+                          // ),
                         ],
                       ),
                     ),

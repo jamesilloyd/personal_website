@@ -8,7 +8,7 @@ class JLDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-        width: MediaQuery.of(context).size.width -160,
+        // width: MediaQuery.of(context).size.width -160,
         child: Divider(
           color: Colors.white,
           thickness: 0.5,
